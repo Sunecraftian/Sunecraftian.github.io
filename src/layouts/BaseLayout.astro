@@ -1,0 +1,41 @@
+---
+const {
+  title = "Sunecraftian — Home",
+  description = "Projects, experiments, and notes.",
+  ogImage = "/og.png",
+} = Astro.props;
+---
+
+<html lang="en" class="h-full">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <meta name="color-scheme" content="light dark" />
+    <meta name="theme-color" content="#0ea5e9" />
+    <link rel="icon" href="/favicon.svg" />
+    <meta name="description" content={description} />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:image" content={ogImage} />
+    <meta name="twitter:card" content="summary_large_image" />
+    <title>{title}</title>
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <!-- Optional: drop-in font without JS -->
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      :root {
+        --font-sans: "Inter", ui-sans-serif, system-ui, -apple-system, Segoe UI,
+          Roboto, Ubuntu, "Helvetica Neue", Arial, "Noto Sans", sans-serif;
+      }
+      body {
+        font-family: var(--font-sans);
+      }
+    </style>
+  </head>
+  <body class="h-full">
+    <slot />
+  </body>
+</html>

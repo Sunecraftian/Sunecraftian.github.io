@@ -1,27 +1,62 @@
 ---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import "../styles/tailwind.css";
+import Header from "../components/Header.astro";
+import Footer from "../components/Footer.astro";
+import ProjectCard from "../components/ProjectCard.astro";
 
+const projects = [
+  {
+    title: "Voxel Engine",
+    href: "/projects/Voxel-Engine/",
+    description:
+      "A generation-first voxel sandbox (Godot 4.5) exploring chunking, meshing, and layered biomes.",
+    meta: "WIP • Godot",
+  },
+  // Add more here
+];
 ---
 
-<!doctype html>
-<html lang="en">
-	<head>
-		<meta charset="utf-8" />
-		<meta name="viewport" content="width=device-width, initial-scale=1" />
-		<meta name="generator" content={Astro.generator} />
-		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-		<title>Sunecraftian — Home</title>
-	</head>
-	<body>
-		<header>
-			<h1>Sunecraftian</h1>
-		</header>
+<BaseLayout
+  title="Sunecraftian — Home"
+  description="Projects, experiments, and notes."
+>
+  <Header />
 
-		<main>
-			<nav>
-				<ul>
-					<li><a href="/projects/Voxel-Engine">Voxel Engine</a></li>
-				</ul>
-			</nav>
-		</main>
-	</body>
-</html>
+  <main class="container pb-16">
+    <!-- Hero -->
+    <section class="py-8 sm:py-14">
+      <h1 class="text-4xl sm:text-5xl font-extrabold tracking-tight">
+        Build. Learn. Ship.
+      </h1>
+      <p class="mt-4 text-lg text-[rgb(var(--muted))] max-w-2xl">
+        I’m Sunecraftian. This is my lab for game dev systems, engines, and
+        creative experiments.
+      </p>
+      <div class="mt-6 flex gap-3">
+        <a
+          href="/projects/"
+          class="px-4 py-2 rounded-xl bg-black/80 text-white dark:bg-white/90 dark:text-black no-underline"
+        >
+          View Projects
+        </a>
+        <a
+          href="https://github.com/sunecraftian"
+          class="px-4 py-2 rounded-xl border border-white/20 no-underline"
+        >
+          GitHub
+        </a>
+      </div>
+    </section>
+
+    <!-- Projects -->
+    <section class="space-y-4">
+      <h2 class="text-xl font-semibold">Featured</h2>
+      <div class="grid gap-4">
+        {projects.map((p) => <ProjectCard {...p} />)}
+      </div>
+    </section>
+  </main>
+
+  <Footer />
+</BaseLayout>
