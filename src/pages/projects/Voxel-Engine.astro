@@ -1,15 +1,487 @@
----
-title: "About";
----
-
+<!doctype html>
 <html lang="en">
   <head>
     <meta charset="utf-8" />
-    <title>About Page</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Layer 0 — Level 1 (v1.1): What Is a Vertex?</title>
+    <meta
+      name="description"
+      content="Voxel Engine Course — Layer 0, Level 1 (v1.1): What Is a Vertex? Narrative, instructive blog with theory, pseudocode, Godot implementation, image placeholders, and an exercise."
+    />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <style>
+      /* ---------- Base Typography & Layout ---------- */
+      :root {
+        --bg: #0f1218;
+        --panel: #141922;
+        --ink: #e9eef5;
+        --muted: #aab5c6;
+        --accent: #77ffc0;
+        --accent-2: #7aa8ff;
+        --accent-3: #ffd36a;
+        --code-bg: #0b0f15;
+        --code-border: #1d2633;
+        --card: #101521;
+        --hr: #1d2633;
+        --shadow: 0 8px 24px rgba(0, 0, 0, 0.25);
+        --radius: 14px;
+        --radius-sm: 10px;
+        --maxw: 840px;
+      }
+      * {
+        box-sizing: border-box;
+      }
+      html,
+      body {
+        background: var(--bg);
+        color: var(--ink);
+        margin: 0;
+        font:
+          16px/1.6 system-ui,
+          -apple-system,
+          Segoe UI,
+          Roboto,
+          Inter,
+          "Helvetica Neue",
+          Arial,
+          "Apple Color Emoji",
+          "Segoe UI Emoji";
+        text-rendering: optimizeLegibility;
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+      }
+      a {
+        color: var(--accent-2);
+        text-decoration: none;
+      }
+      a:hover {
+        text-decoration: underline;
+      }
+      .wrap {
+        max-width: var(--maxw);
+        margin: 56px auto;
+        padding: 0 20px 72px;
+      }
+      header {
+        margin-bottom: 28px;
+      }
+      h1 {
+        font-size: clamp(28px, 3.6vw, 40px);
+        line-height: 1.15;
+        margin: 0 0 6px;
+        letter-spacing: 0.2px;
+      }
+      .sub {
+        color: var(--muted);
+        font-size: 15px;
+        margin-top: 6px;
+      }
+      h2 {
+        font-size: clamp(22px, 2.8vw, 28px);
+        margin: 28px 0 8px;
+      }
+      h3 {
+        font-size: 18px;
+        margin: 20px 0 8px;
+        color: #dfe7f3;
+      }
+      p {
+        margin: 12px 0;
+      }
+      hr {
+        border: 0;
+        border-top: 1px solid var(--hr);
+        margin: 28px 0;
+      }
+      .quote {
+        border-left: 3px solid var(--accent);
+        background: linear-gradient(
+          90deg,
+          rgba(119, 255, 192, 0.08),
+          transparent 45%
+        );
+        padding: 12px 16px;
+        border-radius: var(--radius-sm);
+        margin: 16px 0;
+      }
+
+      /* ---------- Cards & Callouts ---------- */
+      .card {
+        background: var(--panel);
+        border: 1px solid var(--hr);
+        border-radius: var(--radius);
+        box-shadow: var(--shadow);
+        padding: 18px 18px;
+        margin: 18px 0;
+      }
+      .tag {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        background: #0f1725;
+        border: 1px solid var(--hr);
+        color: var(--ink);
+        border-radius: 999px;
+        padding: 6px 12px;
+        font-size: 13px;
+        margin: 8px 0 0;
+      }
+      .tag .dot {
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        background: #2ad671;
+        box-shadow: 0 0 0 3px rgba(42, 214, 113, 0.15);
+      }
+      .callout {
+        border: 1px solid var(--hr);
+        background: #101828;
+        border-radius: var(--radius);
+        padding: 14px 16px;
+        margin: 16px 0;
+      }
+      .callout strong {
+        color: var(--accent);
+      }
+
+      /* ---------- Image Placeholders ---------- */
+      .placeholder {
+        background: var(--card);
+        border: 1px dashed #2a3343;
+        border-radius: var(--radius);
+        padding: 16px;
+        margin: 18px 0;
+      }
+      .placeholder h4 {
+        margin: 0 0 8px;
+        font-size: 15px;
+        color: var(--accent-3);
+      }
+      .placeholder p {
+        margin: 0;
+        color: var(--muted);
+        font-size: 14px;
+      }
+
+      /* ---------- Code Blocks ---------- */
+      pre {
+        background: var(--code-bg);
+        border: 1px solid var(--code-border);
+        border-radius: var(--radius);
+        padding: 14px 16px;
+        overflow: auto;
+        margin: 14px 0;
+      }
+      code,
+      pre code {
+        font-family: ui-monospace, SFMono-Regular, Menlo, Monaco,
+          "Cascadia Mono", "Segoe UI Mono", Consolas, "Liberation Mono",
+          "Courier New", monospace;
+        font-size: 13.5px;
+        color: #e6f1ff;
+        tab-size: 2;
+        white-space: pre;
+      }
+      /* tiny inline code */
+      p code {
+        background: #0e1420;
+        padding: 2px 6px;
+        border-radius: 6px;
+        border: 1px solid var(--code-border);
+      }
+
+      /* ---------- Section Labels ---------- */
+      .label {
+        text-transform: uppercase;
+        letter-spacing: 0.12em;
+        font-weight: 700;
+        color: var(--muted);
+        font-size: 12px;
+        margin: 18px 0 6px;
+      }
+
+      /* ---------- Exercise Section ---------- */
+      .exercise {
+        background: linear-gradient(
+          180deg,
+          rgba(122, 168, 255, 0.07),
+          transparent 45%
+        );
+        border: 1px solid var(--hr);
+        border-radius: var(--radius);
+        padding: 18px 18px;
+        margin: 18px 0 0;
+      }
+      .exercise h3 {
+        margin-top: 0;
+      }
+      .exercise ul {
+        margin: 8px 0 0 20px;
+      }
+      .exercise li {
+        margin: 8px 0;
+      }
+    </style>
   </head>
   <body>
-    <h1>About This Project</h1>
-    <p>Welcome! This page was added as a new route in Astro.</p>
-    <p>Anything in <code>src/pages/</code> becomes a public page.</p>
+    <main class="wrap">
+      <header>
+        <h1>🧩 Layer 0 — Foundations of 3D Rendering</h1>
+        <div class="sub">
+          <strong>Level 1 (v1.1)</strong> — What Is a Vertex?
+        </div>
+      </header>
+
+      <section>
+        <h2>🧠 A Point in the Void</h2>
+        <p>
+          Picture a completely empty space—no walls, no ground, no light. Now
+          imagine placing a single point somewhere inside that void. You can’t
+          see it, you can’t touch it, but mathematically, you’ve just defined a <strong
+            >position</strong
+          >.
+        </p>
+        <p>That single position is what we call a <strong>vertex</strong>.</p>
+        <p>
+          A vertex doesn’t have shape, color, or texture. It doesn’t even
+          “exist” visually. It’s simply <em>a coordinate in 3D space</em>—a tiny
+          piece of data that tells the computer,
+        </p>
+        <div class="quote">“Something important is located right here.”</div>
+        <p>
+          Everything you’ll ever render—a cube, a character, an entire
+          world—begins with these silent little dots.
+        </p>
+
+        <div class="placeholder">
+          <h4>📷 Image Placeholder #1 — “Point in 3D Space”</h4>
+          <p>
+            A minimalist diagram of 3D axes labeled X, Y, and Z, with a small
+            glowing point at (1, 2, 3). The origin (0, 0, 0) is shown for
+            comparison.
+          </p>
+        </div>
+      </section>
+
+      <section>
+        <h2>⚙️ Understanding the Concept</h2>
+        <p>
+          Let’s get comfortable with what a vertex really <em>is</em>—not as a
+          programming construct, but as an idea.
+        </p>
+        <p>
+          When we describe a vertex, we’re really just giving the computer <strong
+            >three numbers</strong
+          >—one for each direction in 3D space. Think of describing where you
+          are in a room:
+        </p>
+        <ul>
+          <li><strong>X</strong> tells how far left or right you are.</li>
+          <li><strong>Y</strong> tells how high or low you are.</li>
+          <li>
+            <strong>Z</strong> tells how close or far you are from the wall in front
+            of you.
+          </li>
+        </ul>
+        <p>
+          Put those three together, and you get a <strong>coordinate</strong>,
+          like this:
+        </p>
+        <pre><code>(1, 2, 3)</code></pre>
+        <p>
+          This is called a <strong>tuple</strong> (pronounced <em>too-pull</em
+          >)—an ordered, immutable list of values. Here, it’s three numbers that
+          always appear in the same order: <code>(x, y, z)</code>. It’s like a
+          label on a map pin, telling exactly where that pin should be placed.
+        </p>
+        <p>
+          In game engines like <strong>Godot</strong>, tuples like this are
+          represented by an object called a <strong>Vector3</strong>. A <code
+            >Vector3</code
+          > is simply a structure that stores three numbers (x, y, z) together and
+          lets you do math with them—add them, scale them, measure distances, and
+          more. That’s all a vertex is: a <code>Vector3</code> that marks a location
+          in 3D space.
+        </p>
+
+        <div class="placeholder">
+          <h4>📷 Image Placeholder #2 — “Axes Diagram with Labels”</h4>
+          <p>
+            A clean coordinate-system diagram showing arrows labeled X
+            (left-right), Y (up-down), and Z (forward-back), with a glowing
+            point at (1, 2, 3). Include labels for positive and negative
+            directions.
+          </p>
+        </div>
+
+        <p>
+          When you hear “vertex,” don’t think of fancy models or complex
+          geometry. Think of it as a <em>GPS coordinate</em> for the 3D world—a single
+          pin in infinite space. It’s the building block from which all shapes, structures,
+          and terrains are formed.
+        </p>
+      </section>
+
+      <section>
+        <h2>🧪 Theoretical Implementation Walkthrough</h2>
+        <p>
+          Now that we understand what a vertex <em>means</em>, let’s describe
+          how we’d represent one in code—not in Godot yet, just conceptually.
+        </p>
+        <p><strong>Goal of this level:</strong></p>
+        <ul>
+          <li>Define one vertex.</li>
+          <li>
+            Print its position so we can confirm we’ve stored it correctly.
+          </li>
+          <li>
+            (Optional) Place a tiny marker at that location to visualize it.
+          </li>
+        </ul>
+        <p>
+          At this stage, we’re not building a shape or a surface—we’re only
+          declaring that “a point exists here.”
+        </p>
+
+        <div class="label">Pseudocode</div>
+        <pre><code># Level 1 — What Is a Vertex?
+
+# Step 1: Create a vertex as a 3D coordinate
+vertex ← (1, 2, 3)     # represents position in 3D space
+
+# Step 2: Output its position
+print("Vertex position:", vertex)
+
+# Step 3 (Optional): Create a small visual marker at that coordinate
+marker ← create_marker_mesh()
+marker.scale ← very_small_size
+marker.position ← vertex
+scene.add_child(marker)</code></pre>
+
+        <div class="callout">
+          <strong>Key Takeaway:</strong> Every 3D engine starts by declaring <em
+            >where</em
+          > something exists long before deciding <em>what</em> it looks like.
+        </div>
+      </section>
+
+      <section>
+        <h2>🏗️ Concrete Implementation Walkthrough (Godot 4.5)</h2>
+
+        <h3>Step 1 — Create the Scene</h3>
+        <p>
+          Create a new scene: <code>Sandbox_L0_Foundations.tscn</code>. Use a <code
+            >Node3D</code
+          > as the root (name it <strong>Sandbox</strong>) and attach a new
+          script: <code>MeshBasics.gd</code>.
+        </p>
+
+        <h3>Step 2 — Define Your First Vertex</h3>
+        <pre><code class="language-gdscript"># MeshBasics.gd
+extends Node3D
+
+func _ready() -> void:
+    # Step 1 — Create a vertex
+    var vertex := Vector3(1, 2, 3)
+
+    # Step 2 — Print its position
+    print("Vertex position:", vertex)</code></pre>
+
+        <p>Run the scene (F6). The Output panel should show:</p>
+        <pre><code>Vertex position: (1, 2, 3)</code></pre>
+
+        <div class="placeholder">
+          <h4>📷 Image Placeholder #3 — “Godot Console Output”</h4>
+          <p>
+            A cropped screenshot of Godot’s Output panel showing the printed
+            vertex coordinates.
+          </p>
+        </div>
+
+        <h3>Step 3 — Make It Visible (Optional)</h3>
+        <pre><code class="language-gdscript">    var marker := MeshInstance3D.new()
+    marker.mesh = SphereMesh.new()
+    marker.scale = Vector3(0.05, 0.05, 0.05)
+    marker.position = vertex
+    add_child(marker)</code></pre>
+
+        <p>
+          Play again—you’ll see a small sphere floating somewhere in your 3D
+          view. That’s your vertex made visible—a single point in the void.
+        </p>
+
+        <div class="placeholder">
+          <h4>📷 Image Placeholder #4 — “Tiny Sphere in 3D View”</h4>
+          <p>
+            A screenshot of Godot’s 3D viewport showing a tiny sphere offset
+            from the origin, with labeled coordinates (1, 2, 3) and the axes
+            gizmo visible.
+          </p>
+        </div>
+      </section>
+
+      <section>
+        <h2>🎯 What You’ve Learned</h2>
+        <ul>
+          <li>
+            A <strong>vertex</strong> is a single point in 3D space defined by coordinates
+            <code>(x, y, z)</code>.
+          </li>
+          <li>
+            A <strong>tuple</strong> is an ordered group of related values (like
+            those three numbers).
+          </li>
+          <li>
+            A <strong>Vector3</strong> in Godot is how we store and manipulate that
+            data.
+          </li>
+        </ul>
+        <p>
+          You didn’t just define data—you defined <em>existence</em>. Every
+          block, structure, and world you’ll build in this engine starts here.
+        </p>
+      </section>
+
+      <section>
+        <h2>🔗 Next Step</h2>
+        <p>
+          In <strong>Level 2</strong>, we’ll take the next step toward
+          visibility—using multiple vertices to define a <em>surface</em> the computer
+          can actually draw. But for now, let’s pause and appreciate that the universe
+          of your voxel engine began today—with a single, invisible point floating
+          in space.
+        </p>
+      </section>
+
+      <section class="exercise">
+        <h3>🧩 Exercise 🟢 <em>Beginner</em></h3>
+        <p>Before moving on, try experimenting with what you’ve learned:</p>
+        <ul>
+          <li>
+            <strong>Move the vertex</strong> — Change the numbers in <code
+              >Vector3(x, y, z)</code
+            > and observe where the sphere moves. What happens with negative values?
+            Predict the direction before you press Play.
+          </li>
+          <li>
+            <strong>Add more markers</strong> — Create several vertices at different
+            positions and add markers for each. Try forming a line, a square outline,
+            or a stair shape.
+          </li>
+          <li>
+            <strong>Change scale or color (optional)</strong> — Increase the sphere
+            size or give each marker a distinct material color to feel the depth
+            and spacing.
+          </li>
+        </ul>
+        <p>
+          There’s no right answer—just exploration. Each adjustment strengthens
+          your intuition for how numbers map to 3D space.
+        </p>
+      </section>
+
+      <hr />
+      <p class="sub">📘 End of Level 1 (v1.1)</p>
+    </main>
   </body>
 </html>
